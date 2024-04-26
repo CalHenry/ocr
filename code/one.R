@@ -22,7 +22,7 @@ pdf_ocr_text("data/raw/Statistique_industrie_min?rale_1914-1918.pdf", dpi = 900,
 pdf_ocr_text("test3.png", dpi = 600, pages = 56, language = "fra")
 
 ## partie test tesserac
-# tesseract_download("fra")
+ tesseract_download("fra")
 fra <- tesseract("fra")
 nodots <- tesseract(language = "fra", options = list(tessedit_char_blacklist = "."))
 
