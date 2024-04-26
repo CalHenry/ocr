@@ -52,10 +52,11 @@ imaa <- im %>%
 
 
 
-ocr(im, engine = nodots) %>%
+ocr(im, engine = fra) %>%
   cat()
 ##
 im <- image_read("data/bo_56 - Copie.png")
+im <- image_read("data/Statistique_industrie_minérale_1914-1918_054.jpg")
 
 # Image processing --------------------------------------------------------
 
