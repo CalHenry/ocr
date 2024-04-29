@@ -125,3 +125,48 @@ dc <- p5 %>%
 dc
 
 info$height
+
+h_png <- read.csv("h_png.txt")
+h_tiff <- read.csv("h_tiff.txt")
+
+diffChr(h_png, h_tiff)
+
+#######################
+p <- p5 %>% 
+  image_convert(colorspace = "gray") %>% 
+  #image_rotate(-0.3) %>% 
+  #image_scale(geometry = "3116x2916") %>% 
+  #image_scale(geometry = "2464x2306") %>% 
+  image_scale(geometry = "2400x")
+  # image_threshold("white", threshold = "85%") %>% 
+  # image_threshold("black", threshold = "60%") %>% 
+  # image_blur(radius = 3, sigma = 1) %>% 
+  # image_median(radius = 4) %>% 
+  # image_enhance() 
+p
+
+h <- ocr(p, engine = tesseract("fra"))
+h
+
+
+p <- p5 %>% 
+  image_convert(colorspace = "gray") %>% 
+  #image_rotate(-0.3) %>% 
+  #image_scale(geometry = "3116x2916") %>% 
+  #image_scale(geometry = "2464x2306") %>% 
+  image_scale(geometry = "6000x") %>% 
+  image_threshold("white", threshold = "85%") %>%
+  image_threshold("black", threshold = "80%") %>%
+  image_blur(radius = 3, sigma = 0.5) %>%
+  image_median(radius = 4) %>%
+  image_enhance()
+p
+
+h <- ocr(p, engine = tesseract("fra"))
+h
+
+
+
+
+
+
