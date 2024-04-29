@@ -151,19 +151,86 @@ h
 
 p <- p5 %>% 
   image_convert(colorspace = "gray") %>% 
-  #image_rotate(-0.3) %>% 
+  image_rotate(-0.3) %>% 
   #image_scale(geometry = "3116x2916") %>% 
   #image_scale(geometry = "2464x2306") %>% 
-  image_scale(geometry = "6000x") %>% 
+  image_scale(geometry = "2000x") %>% 
   image_threshold("white", threshold = "85%") %>%
   image_threshold("black", threshold = "80%") %>%
-  image_blur(radius = 3, sigma = 0.5) %>%
-  image_median(radius = 4) %>%
+  image_blur(radius = 6, sigma = 0.5) %>%
+  image_median(radius = 8) %>%
   image_enhance()
 p
 
 h <- ocr(p, engine = tesseract("fra"))
 h
+
+#blur afters mooth
+p <- p5 %>% 
+  image_convert(colorspace = "gray") %>% 
+  image_rotate(-0.3) %>% 
+  #image_scale(geometry = "3116x2916") %>% 
+  #image_scale(geometry = "2464x2306") %>% 
+  image_scale(geometry = "2000x") %>% 
+  image_threshold("white", threshold = "85%") %>%
+  image_threshold("black", threshold = "80%") %>%
+  image_median(radius = 4) %>%
+  image_blur(radius = 2, sigma = 1.5) %>%
+  image_enhance()
+p
+
+h <- ocr(p, engine = tesseract("fra"))
+h
+
+
+write.csv(h, "h.txt")
+
+##############
+
+im <- image_read("data/raw/Statistique_industrie_minérale_1914-1918_58.tiff")
+info <- image_info(im)
+
+# Apply image processing operations
+im_p <- im %>%
+  image_crop((info$width/2)-1280) %>% 
+  image_crop("x80%+0+800") %>%
+  image_convert(colorspace = "gray") %>% 
+  image_rotate(-0.3) %>% 
+  image_scale(geometry = "2000x") %>% 
+  image_threshold("white", threshold = "85%") %>%
+  image_threshold("black", threshold = "80%") %>%
+  image_median(radius = 4) %>%
+  image_blur(radius = 2, sigma = 1.5) %>%
+  image_enhance()
+
+# Save the processed image to the destination folder
+destination_file <- file.path(destination_folder, basename(file))
+image_write(im_p, destination_folder)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
