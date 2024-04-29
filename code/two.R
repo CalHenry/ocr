@@ -5,15 +5,15 @@ library(tidyverse)
 library(tesseract)
 library(pdftools)
 library(magick)
-library(imager)
+#library(imager)
 
 
 # import et conversion pdf en png -----------------------------------------
-# doc <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "png", dpi = 600)
+# doc <- pdf_convert("data/raw/Statistique_industrie_min?rale_1914-1918.pdf", format = "png", dpi = 600)
 # 
-doc1 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "png", dpi = 400, pages = 56)
+doc1 <- pdf_convert("data/raw/Statistique_industrie_min?rale_1914-1918.pdf", format = "png", dpi = 400, pages = 56)
 # 
-# pdf_ocr_text("data/raw/Statistique_industrie_minérale_1914-1918.pdf", dpi = 900, pages = 56, language = "fra")
+# pdf_ocr_text("data/raw/Statistique_industrie_min?rale_1914-1918.pdf", dpi = 900, pages = 56, language = "fra")
 # 
 # pdf_ocr_text("test3.png", dpi = 600, pages = 56, language = "fra")
 
