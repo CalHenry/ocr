@@ -1,5 +1,107 @@
 
+# cut pges in 2 to have even and odd
 
+file_list <- list.files("data/raw", pattern = "\\.tiff$", full.names = TRUE)
+tiff_list <- lapply(file_list, image_read)
+
+#even
+p5 <- p56 %>%
+  image_crop((info$width/2)-1280) %>% 
+  image_crop("x80%+0+800")
+
+  
+
+#odd
+info <- image_info(p56)
+info_width <- info$width
+p5 <- p56 %>%
+  image_rotate(-1) %>% 
+  image_flop() %>% 
+  image_crop((info$width/1.95)) %>% 
+  image_flop() %>%
+  image_crop(-1450)
+p5
+
+
+#####
+p5_list <- lapply(tiff_list, function(image) {
+  p5 <- image %>%
+    image_crop((info$width/2)-1280) %>%
+    image_crop("x80%+0+800")
+  return(p5)
+})
+
+p52_list <- lapply(tiff_list, function(image) {
+  p5 <- image %>%
+    image_rotate(-1) %>% 
+    image_flop() %>% 
+    image_crop((info$width/1.95)) %>% 
+    image_flop() %>%
+    image_crop(-1450)
+  return(p5)
+})
+
+
+ocr(p52_list[3], engine = tesseract("fra"))
+
+
+# old parts ---------------------------------------------------------------
+# crop EVEN
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
+p5_list <- lapply(tiff_list, function(image) {
+  p5 <- image %>%
+    image_crop((info$width/2)-1280) %>%
+    image_crop("x80%+0+800")
+  return(p5)
+})doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
+
+p56 <- image_read(doc1_p56)
+p57 <- image_read(doc1_p57)
+
+info <- image_info(p56)
+
+#cropping even images, removal of the last col bc no valuable info in it.
+p5 <- p56 %>%
+  image_crop((info$width/2)-1280) %>% 
+  image_crop("x80%+0+800")
+
+p5 <- p56 %>%
+  image_scale("2000x") %>% 
+  image_rotate(-1)
+p5
+
+p5 <- p56 %>%
+  image_scale("2000x") %>%
+  image_rotate(-1) %>% 
+  image_flop() %>% 
+  image_crop(info$width/2) %>% 
+  image_flop() %>% 
+  image_crop(-1450)
+p5
+
+p5 <- p56 %>%
+  image_scale(geometry = "2000x") %>%
+  image_rotate(-1) %>% 
+  image_flop() %>% 
+  image_crop(info$width/2) %>% 
+  image_flop() %>% 
+  image_crop(-1450)
+p5
+
+
+
+p <- p5 %>% 
+  image_convert(colorspace = "gray") %>% 
+  image_rotate(-0.3) %>% 
+  image_scale(geometry = "2000x") %>% 
+  image_threshold("white", threshold = "85%") %>%
+  image_threshold("black", threshold = "80%") %>%
+  image_median(radius = 4) %>%
+  image_blur(radius = 2, sigma = 1.5) %>%
+  image_enhance()
+
+h <- ocr(p, engine = tesseract("fra"))
+# old parts ---------------------------------------------------------------
 
 
 imay <- image_negate(imay)
@@ -187,7 +289,7 @@ write.csv(h, "h.txt")
 
 ##############
 
-im <- image_read("data/raw/Statistique_industrie_min�rale_1914-1918_58.tiff")
+im <- image_read("data/raw/Statistique_industrie_min?rale_1914-1918_58.tiff")
 info <- image_info(im)
 
 # Apply image processing operations

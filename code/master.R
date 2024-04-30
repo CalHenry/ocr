@@ -10,4 +10,5 @@ library(pdftools)
 
 
 # functions ----------------------------------------------------------------
-source("code/functions/image_processing_function.R")
+source("code/functions/image_processing_function_even.R")
+source("code/functions/image_processing_function_odd.R")

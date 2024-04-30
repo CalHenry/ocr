@@ -1,27 +1,21 @@
-# Image processing function
-process_image <- function(file) {
-  # Read and get info
-  im <- image_read(file)
-  info <- image_info(im)
+# Custom Image processing function for odd pages
+process_image_odd <- function(image) {
+  info <- image_info(image)
   
-  # Apply image processing operations
-  im_p <- im %>%
-    image_crop((info$width/2)-1280) %>% 
-    image_crop("x80%+0+800") %>%
+  # Image processing operations
+  im_p <- image %>%
+    image_rotate(-1) %>% 
+    image_flop() %>% 
+    image_crop(info$width/2) %>% 
+    image_flop() %>% 
+    image_crop(-1450) %>% 
     image_convert(colorspace = "gray") %>% 
-    image_rotate(-0.3) %>% 
     image_scale(geometry = "2000x") %>% 
     image_threshold("white", threshold = "85%") %>%
     image_threshold("black", threshold = "80%") %>%
     image_median(radius = 4) %>%
     image_blur(radius = 2, sigma = 1.5) %>%
     image_enhance()
-  
- # Save the processed image to a list
-  # destination_file <- file.path(destination_folder, basename(file))
-  # image_write(im_p, destination_file)
-  #return(p)
-
 }
 
 #' Details of each line:
@@ -38,3 +32,4 @@ process_image <- function(file) {
 #' 9. Blur is used for th esame purposed, it limits the sharp edges of the tiny letters, 
 #' making them easier to read by ocr.
 #' 10. image_enhance is supposed to minimize noise (random odd color pixels)
+
