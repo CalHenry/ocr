@@ -5,6 +5,7 @@
 library(tidyverse)
 library(tesseract)
 library(pdftools)
+library(magick)
 
 # Master file for ----
 

@@ -24,26 +24,27 @@ p5
 
 
 #####
-p5_list <- lapply(tiff_list, function(image) {
-  p5 <- image %>%
+even_file_list <- lapply(tiff_list, function(image) {
+  im_c <- image %>%
     image_crop((info$width/2)-1280) %>%
     image_crop("x80%+0+800")
-  return(p5)
+  return(im_c)
 })
 
-p52_list <- lapply(tiff_list, function(image) {
-  p5 <- image %>%
+odd_file_list <- lapply(tiff_list, function(image) {
+  im_c <- image %>%
     image_rotate(-1) %>% 
     image_flop() %>% 
     image_crop((info$width/1.95)) %>% 
     image_flop() %>%
     image_crop(-1450)
-  return(p5)
+  return(im_c)
 })
 
-
-ocr(p52_list[3], engine = tesseract("fra"))
-
+p52_list_ocr <- lapply(tiff_list, function(image) {
+  p5 <- image %>%
+  ocr(engine = tesseract("fra"))
+})
 
 # old parts ---------------------------------------------------------------
 # crop EVEN
@@ -53,7 +54,10 @@ p5_list <- lapply(tiff_list, function(image) {
     image_crop((info$width/2)-1280) %>%
     image_crop("x80%+0+800")
   return(p5)
-})doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
+})
+
+#crop odd
+doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
 
 p56 <- image_read(doc1_p56)
 p57 <- image_read(doc1_p57)
@@ -312,23 +316,45 @@ image_write(im_p, destination_folder)
 
 
 
+even_pages_list[4]
+
+odd_pages_list[4]
 
 
 
 
+even_pages_listsss <- lapply(seq_along(tiff_list), function(i) {
+  image <- tiff_list[[i]]
+  im_c <- image %>%
+    image_crop((info$width/2)-1280) %>%
+    image_crop("x80%+0+800")
+  names(im_c) <- paste0(2 * i)  # Assign even names
+  return(im_c)
+})
+
+odd_after_process <- lapply(odd_pages_list, process_image_odd)
+
+odd_ocr_text <- lapply(odd_after_process, ocr, engine = tesseract("fra")) 
 
 
+odd_after_process[1]
 
-
-
-
-
-
-
-
-
-
-
+odd_ocr_text[3]
+# Image processing operations
+# im_p <- image %>%
+#   image_rotate(-1) %>% 
+#   image_flop() %>% 
+#   image_crop(info$width/2) %>% 
+#   image_flop() %>% 
+#   image_crop(-1450) %>% 
+#   image_convert(colorspace = "gray") %>% 
+#   image_scale(geometry = "2000x") %>% 
+#   image_threshold("white", threshold = "85%") %>%
+#   image_threshold("black", threshold = "80%") %>%
+#   image_median(radius = 4) %>%
+#   image_blur(radius = 2, sigma = 1.5) %>%
+#   image_enhance()
+# }
 
 
 

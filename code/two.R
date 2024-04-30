@@ -50,7 +50,7 @@ p56 <- p5 %>%
 p56  
 
 
-ocr(p56, engine = tesseract("fra"))
+ff <- ocr(p56, engine = tesseract("fra"))
 
 image_info(bobo)
 image_info(p56)
