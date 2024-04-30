@@ -20,7 +20,7 @@ process_image <- function(file) {
  # Save the processed image to a list
   # destination_file <- file.path(destination_folder, basename(file))
   # image_write(im_p, destination_file)
-  return(p)
+  #return(p)
 
 }
 

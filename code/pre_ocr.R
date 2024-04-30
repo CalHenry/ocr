@@ -15,12 +15,11 @@ library(magick)
 
 
 
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:58)
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:58)
 
-
+#move the generated tiif image to the data folder
 tiff_file_list <- list.files(pattern = "\\.tiff$", full.names = TRUE)
-
 destination_folder <- "data/raw"
 for (file in tiff_file_list) {
   new_file <- file.path(destination_folder, basename(file))
@@ -50,15 +49,20 @@ p <- p5 %>%
 
 h <- ocr(p, engine = tesseract("fra"))
 
+#' The following part import select, import, process and apply ocr to the tiff images.
+#' lapply function is used to apply the same treatment to all elements of a list:
+#' first, 'image_read' to read all elements of the files list
+#' second, 'process_image' is a custom function that wraps up all the modification given to the images
+#' third, 'ocr' is used on the proccesed images to retreive their content in text
 
-# Get a list of all TIFF files in the source folder
 file_list <- list.files("data/raw", pattern = "\\.tiff$", full.names = TRUE)
 
-# Apply the image processing function to all TIFF files using lapply
-destination_folder <- "data/int"
-test_lap <- lapply(file_list, process_image)
+tiff_images <- lapply(file_list, image_read)
 
-test_ocr <- lapply(test_lap, ocr) 
+# Image processing
+after_process <- lapply(file_list, process_image)
+
+ocr_text <- lapply(after_process, ocr, engine = tesseract("fra")) 
 
 
 
