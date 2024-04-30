@@ -15,8 +15,8 @@ library(magick)
 
 
 
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:59)
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:59)
 
 # move the generated tiff image to the data/raw folder
 tiff_files <- list.files(pattern = "\\.tiff$", full.names = TRUE)

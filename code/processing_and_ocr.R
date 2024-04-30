@@ -12,8 +12,9 @@ source("code/functions/image_processing_function.R")
 
 
 # Single PDF file to several tiff images.  --------------------------------
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:59)
+
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_min2rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:59)
+
 
 # move the generated tiff images to the data/raw folder
 tiff_files <- list.files(pattern = "\\.tiff$", full.names = TRUE)

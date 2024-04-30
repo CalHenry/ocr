@@ -35,14 +35,6 @@ spell_check <- lapply(ocr_text, function(text) {
 
 
 
-pdftools::pdf_text("data/raw/Statistique_industrie_minérale_1914-1918.pdf")
-
-
-
-
-
-
-
 
 
 

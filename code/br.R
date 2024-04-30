@@ -156,27 +156,6 @@ cop
 copy2 <- image_read("data/copy2.png")
 ocr(copy2, engine = "fra")
 
-####try chatgpt answer
-
-library(magick)
-
-# Read the image
-image <- image_read("path/to/your/image.png")
-
-smoothed_image <- im %>%
-  image_blur(sigma = 1)
-
-resized_image <- smoothed_image %>%
-  image_resize("600x400", "sinc")
-
-despeckled_image <- smoothed_image %>%
-  image_despeckle()
-
-denoised_image <- despeckled_image %>%
-  image_reducenoise()
-
-ocr(denoised_image, engine = "fra")
-
 
 
 
@@ -293,7 +272,7 @@ write.csv(h, "h.txt")
 
 ##############
 
-im <- image_read("data/raw/Statistique_industrie_min?rale_1914-1918_58.tiff")
+im <- image_read("data/raw/Statistique_industrie_minérale_1914-1918_58.tiff")
 info <- image_info(im)
 
 # Apply image processing operations
@@ -309,37 +288,63 @@ im_p <- im %>%
   image_blur(radius = 2, sigma = 1.5) %>%
   image_enhance()
 
-# Save the processed image to the destination folder
-destination_file <- file.path(destination_folder, basename(file))
-image_write(im_p, destination_folder)
+oo <- ocr(im_p, engine = tesseract("fra"))
+
+
+hunspell(oo, dict = dictionary("fr_FR"))
+
+hs <- hunspell_parse(oo, dict = dictionary("fr_FR"))
+
+hunspell_check(hs, dict = dictionary("fr_FR"))
 
 
 
 
-even_pages_list[4]
 
-odd_pages_list[4]
-
+write.csv(oo, "oo.txt")
 
 
+# Example OCR text
+text <- "A otre-Dame-de-la-Gorge.....|} Plomb......,....... 400 In. e
+4 Revenette-Blanche (La).....} Cnire ............. 400 Ia. ,
+A Roche-de-Belmont.........] Manganèse........... 188 Fe. '"
 
-even_pages_listsss <- lapply(seq_along(tiff_list), function(i) {
-  image <- tiff_list[[i]]
-  im_c <- image %>%
-    image_crop((info$width/2)-1280) %>%
-    image_crop("x80%+0+800")
-  names(im_c) <- paste0(2 * i)  # Assign even names
-  return(im_c)
-})
+# Define the regular expression pattern
+pattern <- "(.*?)\\.\\.\\.\\.\\.\\|\\} (.*?)\\.\\.\\.\\.\\.\\.\\.\\. (.*?) (.*?)\\."
 
-odd_after_process <- lapply(odd_pages_list, process_image_odd)
+# Extract the elements from the OCR text
+matches <- gregexpr(pattern, text, perl = TRUE)
+elements <- regmatches(text, matches)
 
-odd_ocr_text <- lapply(odd_after_process, ocr, engine = tesseract("fra")) 
+# Print the extracted elements
+for (i in 1:length(elements)) {
+  print(elements[[i]])
+}
 
 
-odd_after_process[1]
 
-odd_ocr_text[3]
+ines <- strsplit(oo, "\n", fixed = TRUE)[[1]]
+
+pattern <- "(.*?)\\+.(.*?)+\\.(.*?)+\\."
+
+# Extract the three parts using str_match()
+result <- str_match(ines, pattern)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Image processing operations
 # im_p <- image %>%
 #   image_rotate(-1) %>% 
