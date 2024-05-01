@@ -26,19 +26,52 @@ oo <- ocr(im_p, engine = tesseract("fra"))
 
 
 ines <- strsplit(oo, "\n", fixed = TRUE)[[1]]
+ines <- as_tibble(ines)
 
-# Remove dots
-lines <- gsub("\\.", "", ines) 
-
-for (line in lines) {
-  line <- gsub("\\.", "", ines)  # Remove dots
-  elements <- strsplit(line, " ")[[1]]  # Split by spaces
-}
-
-pattern <- "\\.{2,}"
+data <- ines %>%
+  mutate(content = gsub("\\.\\s+\\.", "..", value)) %>% 
+  mutate(arg = str_split(content, "\\.+"))
 
 
-# Split the line into segments
-segments <- unlist(strsplit(ines, pattern))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
