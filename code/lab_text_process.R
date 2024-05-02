@@ -32,7 +32,8 @@ data <- ines %>%
   mutate(content = gsub("\\.\\s+\\.", "..", value)) %>% 
   mutate(arg = str_split(content, "\\.+"))
 
-
+data <- data %>% 
+  separate_wider_delim(arg, delim = ",", names = "NA")
 
 
 
