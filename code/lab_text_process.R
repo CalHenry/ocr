@@ -27,21 +27,36 @@ oo <- ocr(im_p, engine = tesseract("fra"))
 
 ines <- as_tibble(strsplit(oo, "\n", fixed = TRUE)[[1]])
 
-
 data <- ines %>%
   mutate(content = gsub("\\.\\s+\\.", "..", value)) %>%
+  mutate(content = gsub("^(\\p{L})\\s", "", content, perl = TRUE)) %>% 
   mutate(content = gsub("\\[|\\]|\\}|\\{|\\!", "|", content)) %>%
+  mutate(content = str_replace(content, "^\\s*\\|", "")) %>% 
   mutate(content = gsub("\\|\\|", "|", content)) %>%
   mutate(content = gsub("(?<=\\..)1", "|", content, perl = TRUE)) %>% 
   mutate(content = str_replace_all(content, "(\\.{2,})\\s*([A-Za-z0-9])", "\\1|\\2")) %>% 
+  mutate(content = str_replace(content, "(.)(dem)", "i\\2")) %>% 
   mutate(arg = str_split(content, "(?<!\\d)\\.+(?!\\d)")) %>% 
   mutate(arg = as.character(arg)) %>% 
   mutate(arg = lapply(arg, function(x) gsub("^c\\(|\\)$", "", x))) %>% 
   separate_wider_delim(arg, delim = "|", names_sep = "", too_few = "align_start")
 
-
-
-# Memo
+data <- ines %>%
+  mutate(content = str_replace(value, "\\.\\s+\\.", "..")) %>%
+  mutate(content = str_replace(content, "^(\\p{L})\\s", "")) %>% 
+  mutate(content = str_replace_all(content, "\\[|\\]|\\}|\\{|\\!", "|")) %>%
+  mutate(content = str_replace(content, "^\\s*\\|", "")) %>% 
+  mutate(content = str_replace(content, "\\|\\|", "|")) %>%
+  mutate(content = str_replace(content, "(?<=\\..)1", "|")) %>% 
+  mutate(content = str_replace_all(content, "(\\.{2,})\\s*([A-Za-z0-9])", "\\1|\\2")) %>%
+  mutate(content = str_trim(content, side = "left")) %>% 
+  mutate(content = str_replace(content, "(.)(dem)", "i\\2")) %>% 
+  mutate(arg = str_split(content, "(?<!\\d)\\.+(?!\\d)")) %>% 
+  mutate(arg = as.character(arg)) %>% 
+  mutate(arg = str_replace_all(arg, "\", \"", "")) %>%
+  mutate(arg = lapply(arg, function(x) str_replace_all(x, "^c\\(\"|\"\\)$", ""))) %>% 
+  separate_wider_delim(arg, delim = "|", names_sep = "", too_few = "align_start")
+# Memo ------
 # mutate(content = gsub("\\.\\s+\\.", "..", value)) %>%:
 #   replace occurrences of a period followed by one or more whitespace characters and another period with just two periods.
 # Trad: remove whitespcaes in between sequences of periods ".. ... -> ....."
@@ -50,6 +65,9 @@ data <- ines %>%
 #   replaces occurrences of square brackets, curly brackets, and exclamation marks with a single pipe character.
 # Trad: "reconstruct the cols of the talbe", changes all punct that are supposed to be pipe to pipe.
 
+# mutate(content = str_replace(content, "^\\s*\\|", "")) %>%:
+#   Remove "|" if it is at the beginning of the string, ignoring white spaces.
+
 # mutate(content = gsub("\\|\\|", "|", content)) %>%:
 #   replace occurrences of double pipe characters with a single pipe character in the content variable.
 
@@ -57,6 +75,9 @@ data <- ines %>%
 #   replace occurrences of the digit "1" that are preceded by a period with a pipe character.
 # The ?<=\\.. is a positive lookbehind assertion that checks if there is a period before the "1".
 # Trad: same as before but for the "1", treatment is different because 1 are also present in numbers so we use the lookbehind.
+
+# mutate(content = str_replace_all(content, "(\\.{2,})\\s*([A-Za-z0-9])", "\\1|\\2")) %>%:
+#   after 2 ore more dots, ignoring whitespaces, if there is an alphanumeric, insert a between the dots and the alphanumeric
 
 # mutate(arg = str_split(content, "(?<!\\d)\\.+(?!\\d)")) %>%:
 #   split the content variable into multiple parts based on the regex pattern "(?<!\d)\.+(?!\d)".
@@ -72,9 +93,7 @@ data <- ines %>%
 
 # separate_wider_delim(arg, delim = "|", names_sep = "", too_few = "align_start"):
 #   split the arg variable into separate columns by the delimiter "|".
-
-
-
+# ----
 # data <- ines %>%
 #   mutate(content = gsub("\\.\\s+\\.", "..", value)) %>%
 #   mutate(content = gsub("\\[|\\]|\\}|\\{|\\!", "|", content)) %>%
@@ -86,6 +105,7 @@ data <- ines %>%
 data <- ines %>%
   mutate(content = gsub("\\.\\s+\\.", "..", value)) %>%
   mutate(content = gsub("\\[|\\]|\\}|\\{|\\!", "|", content)) %>%
+  mutate(content = str_replace(content, "^\\s*\\|", "")) %>% 
   mutate(content = gsub("\\|\\|", "|", content)) %>%
   mutate(content = gsub("(?<=\\..)1", "|", content, perl = TRUE)) %>% 
   mutate(content = str_replace_all(content, "(\\.{2,})\\s*([A-Za-z0-9])", "\\1|\\2")) %>% 
