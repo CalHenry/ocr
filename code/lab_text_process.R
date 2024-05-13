@@ -1,4 +1,4 @@
-im <- image_read("data/raw/Statistique_industrie_minÃ©rale_1914-1918_58.tiff")
+im <- image_read("data/raw/Statistique_industrie_minérale_1914-1918_58.tiff")
 info <- image_info(im)
 
 # Apply image processing operations

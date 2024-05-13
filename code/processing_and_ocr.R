@@ -11,9 +11,9 @@ source("code/functions/image_processing_function.R")
 #' tiff is also heavier that png (to take into acount if your computer has low RAM).
 
 
-# Single PDF file to several tiff images.  --------------------------------
+# Single PDF file to several tiff images, importing only the needed pages.  ----
 
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_min2rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56:59)
+doc1 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 34:61)
 
 
 # move the generated tiff images to the data/raw folder
@@ -24,7 +24,7 @@ for (file in tiff_files) {
   file.rename(file, new_file)
 }
 
-###  prepare even and odd lists -------------------------------------------
+###  prepare lists -------------------------------------------
 tiff_file_list <- list.files("data/raw", pattern = "\\.tiff$", full.names = TRUE)
 tiff_list <- lapply(tiff_file_list, image_read)
 
@@ -42,6 +42,7 @@ tiff_list <- lapply(tiff_file_list, image_read)
 
 # list of even pages
 even_pages_list <- lapply(tiff_list, function(image) {
+  info <- image_info(image)
   im_c <- image %>%
     image_rotate(-0.3) %>% 
     image_crop((info$width/2)-1280) %>%
@@ -51,6 +52,7 @@ even_pages_list <- lapply(tiff_list, function(image) {
 
 # list fo odd pages
 odd_pages_list <- lapply(tiff_list, function(image) {
+  info <- image_info(image)
   im_c <- image %>%
     image_rotate(-1) %>% 
     image_flop() %>% 
@@ -60,6 +62,36 @@ odd_pages_list <- lapply(tiff_list, function(image) {
   return(im_c)
 })
 
+
+# If RAM issues come here -------------------------------------------------
+
+tiff_file_list <- list.files("data/raw", pattern = "\\.tiff$", full.names = TRUE)
+
+# Split the list of TIFF file names into batches
+batch_size <- 5
+tiff_file_batches <- split(tiff_file_list, ceiling(seq_along(tiff_file_list) / batch_size))
+
+# Process the images in batches
+for (batch_index in seq_along(tiff_file_batches)) {
+  # Get the TIFF file names for the current batch
+  tiff_file_batch <- tiff_file_batches[[batch_index]]
+  
+  # Read the images in the current batch
+  tiff_list <- lapply(tiff_file_batch, image_read)
+  
+  # Process each image in the current batch
+  even_pages_list <- lapply(tiff_list, function(image) {
+    info <- image_info(image)
+    im_c <- image %>%
+      image_rotate(-0.3) %>% 
+      image_crop((info$width/2)-1280) %>%
+      image_crop("x80%+0+800")
+    return(im_c)
+  })
+  
+  # Perform further operations on the even_pages_list if needed
+  # ...
+}
 
 
 # Image processing --------------------------------------------------------
