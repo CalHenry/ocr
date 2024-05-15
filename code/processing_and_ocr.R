@@ -32,6 +32,7 @@ tiff_list <- lapply(tiff_file_list, image_read)
 #' rotate the image to slitghly to the left
 #' Even:crop the right part + more of the right to remove unnecessary cols
 #' crop "x80%+0+800", 80% of the height and remove 800 pixel vertically (0 horizontally)
+#'
 #' Odd: rotate by 1 degree to the left
 #' flop reverse the image left/ right, so the right page is now on the left
 #' crop: cut the page in half but bc we divide by 1.95 we keep more than half.

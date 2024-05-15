@@ -417,3 +417,57 @@ processed_split_datasets <- lapply(split_split, function(dataset) {
     mutate(arg = str_replace_all(arg, "^c\\(\"|\"\\)$", "")) %>% 
     separate_wider_delim(arg, delim = "|", names_sep = "", too_few = "align_start")
 })
+
+
+
+
+test <- bind_rows(processed_ocr_text)
+
+
+# Function to extract decimal digits from a string
+extract_decimal <- function(string) {
+  decimal <- str_extract(string, "(?<=\\s)[0-9]+[.,][0-9]{3}")
+  return(decimal)
+}
+
+# Apply the decimal extraction function to each "arg.." variable in the merged dataset
+for (i in 1:6) {
+  merged_dataset <- test %>%
+    mutate(!!paste0("arg", i+1) := extract_decimal(!!sym(paste0("arg", i))))
+}
+
+# Rearrange the "arg.." variables
+for (i in length(merged_dataset):3) {
+  merged_dataset <- merged_dataset %>%
+    mutate(!!paste0("arg", i) := !!sym(paste0("arg", i-1)))
+}
+
+# Set the value of "arg2" based on the extracted decimal
+merged_dataset <- merged_dataset %>%
+  mutate(arg2 = extract_decimal(arg1))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+string <- "167 50 13,253 77"
+str_extract(string, "(?<=\\s)[0-9]+[.,][0-9]{3}")
+
+str_extract(string, "(?<=\\s)[0-9]+[.,][0-9]{3}")
+
+
+

@@ -34,12 +34,21 @@ spell_check <- lapply(ocr_text, function(text) {
 #  ----------------------------------------------------------------
 #  ----------------------------------------------------------------
 
-wc_split_split <- lapply(even_ocr_text, split_and_process_ocr_text)
+processed_ocr_text <- lapply(even_ocr_text, split_and_process_ocr_text)
+# detail of the text cleanning in the function file
 
-names(split_split) <- paste0("txt_", seq_along(split_split))
+names(processed_ocr_text) <- paste0("txt_", seq_along(processed_ocr_text))
+
+#' Datasets of the ocr are stored in a list
+#' Each ds of the list is a scan.
+#' In eahc dataset:
+#' - text is a var containing the raw text from OCR
+#' - content is the var that received all the modifications.
+#' - the "arg" vars are "content" var cut into pieces, supposed to reproduce the colomns of the table on the scan.
+#' Outputcannot be perfect due to OCR quality.
 
 
-
+test <- bind_rows(processed_ocr_text)
 
 
 
