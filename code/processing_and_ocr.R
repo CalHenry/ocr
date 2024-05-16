@@ -97,7 +97,7 @@ for (batch_index in seq_along(tiff_file_batches)) {
 
 # Image processing --------------------------------------------------------
 
-#' The following lines import select, import, process and apply ocr to the tiff images.
+#' The following lines import select, process and apply ocr to the tiff images.
 #' lapply function is used to apply the same treatment to all elements of a list:
 #' first, 'image_read' to read all elements of the files list
 #' second, 'process_image' is a custom function that wraps up all the modification given to the images

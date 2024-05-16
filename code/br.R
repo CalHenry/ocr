@@ -456,8 +456,13 @@ merged_dataset <- merged_dataset %>%
 
 
 
+test2 <- test %>% 
+  mutate_at(vars(starts_with("arg")), ~str_split(., pattern = "(?=In)", simplify = TRUE))
 
-
+test2 <- test %>% 
+  mutate_at(vars(starts_with("arg")), ~str_split(., pattern = "(?<=\\s)[0-9]+[.,][0-9]{3}", simplify = T))
+test2 <- test %>% 
+  mutate_at(vars(starts_with("arg")), ~str_split(., pattern = "(?<=\\s)[0-9]+[.,][0-9]{3}", simplify = T))
 
 
 
@@ -469,5 +474,14 @@ str_extract(string, "(?<=\\s)[0-9]+[.,][0-9]{3}")
 
 str_extract(string, "(?<=\\s)[0-9]+[.,][0-9]{3}")
 
+df <- data.frame(
+  col1 = c("This is idem a test", "Another example", "idem and more", "No idem here"),
+  col2 = c("blablablal", "blebebla", "12", "12436464e"),
+  stringsAsFactors = FALSE
+)
+
+# Split the string based on "idem"
+dff <- df %>%
+  mutate(col1 = str_split(col1, pattern = "(?<=idem)", simplify = TRUE))
 
 
