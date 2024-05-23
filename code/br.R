@@ -12,6 +12,7 @@ p5 <- p56 %>%
   
 
 #odd
+p56 <- image_read("data/raw/Statistique_industrie_minérale_1914-1918_51.tiff")
 info <- image_info(p56)
 info_width <- info$width
 p5 <- p56 %>%
@@ -19,9 +20,17 @@ p5 <- p56 %>%
   image_flop() %>% 
   image_crop((info$width/1.95)) %>% 
   image_flop() %>%
-  image_crop(-1450)
+  image_crop(-1450) %>% 
+  image_crop()
 p5
 
+p5 <- p56 %>%
+  image_rotate(-1) %>% 
+  image_flop() %>% 
+  image_crop((info$width/1.95)) %>% 
+  image_flop() %>%
+  image_crop("x80%+0+670")
+p5
 
 #####
 even_file_list <- lapply(tiff_list, function(image) {
@@ -272,7 +281,7 @@ write.csv(h, "h.txt")
 
 ##############
 
-im <- image_read("data/raw/Statistique_industrie_min�rale_1914-1918_58.tiff")
+im <- image_read("data/raw/Statistique_industrie_min?rale_1914-1918_58.tiff")
 info <- image_info(im)
 
 # Apply image processing operations
@@ -307,7 +316,7 @@ write.csv(oo, "oo.txt")
 # Example OCR text
 text <- "A otre-Dame-de-la-Gorge.....|} Plomb......,....... 400 In. e
 4 Revenette-Blanche (La).....} Cnire ............. 400 Ia. ,
-A Roche-de-Belmont.........] Mangan�se........... 188 Fe. '"
+A Roche-de-Belmont.........] Mangan?se........... 188 Fe. '"
 
 # Define the regular expression pattern
 pattern <- "(.*?)\\.\\.\\.\\.\\.\\|\\} (.*?)\\.\\.\\.\\.\\.\\.\\.\\. (.*?) (.*?)\\."
@@ -485,3 +494,12 @@ dff <- df %>%
   mutate(col1 = str_split(col1, pattern = "(?<=idem)", simplify = TRUE))
 
 
+
+string <- c("Â|hello", "9}world", "b[test", "2||this is a test")
+
+str_replace_all(string, "^[:graph:][\\/\\|\\}\\{\\[\\]]{1,}", "")
+string <- c("—————— “a —  ———————————  —— — | —")
+
+if_else((str_count(string, "[:punct:]|[:blank:]|\\|") / str_length(string)) > 0.2, NA, string)
+
+str_replace(string, "^[^[a-zA-Z]:alnum:]*", "")

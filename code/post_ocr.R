@@ -35,9 +35,10 @@ spell_check <- lapply(ocr_text, function(text) {
 #  ----------------------------------------------------------------
 
 processed_ocr_text <- lapply(ocr_text, split_and_process_ocr_text)
+
 # detail of the text cleanning in the function file
 
-names(processed_ocr_text) <- paste0("txt_", seq_along(processed_ocr_text))
+#names(processed_ocr_text) <- paste0("txt_", seq_along(processed_ocr_text))
 
 #' Datasets of the ocr are stored in a list
 #' Each ds of the list is a scan.
@@ -48,22 +49,26 @@ names(processed_ocr_text) <- paste0("txt_", seq_along(processed_ocr_text))
 #' Outputcannot be perfect due to OCR quality.
 
 
-test <- bind_rows(processed_ocr_text)
+#test <- bind_rows(processed_ocr_text)
 
 
-e_pages <- processed_ocr_text[seq(1, 28)]
-o_pages <- processed_ocr_text[seq(29, 56)]
+even_txt_pages <- processed_ocr_text[seq(1, 28)]
+names(even_txt_pages) <- paste0("txt_", seq_along(even_txt_pages), "_e")
 
+odd_txt_pages <- processed_ocr_text[seq(29, 56)]
+names(odd_txt_pages) <- paste0("txt_", seq_along(odd_txt_pages), "_o")
 
 reordered_list <- vector("list", (length(e_pages)*2))
 
 for (i in 1:28) {
-  reordered_list[[2*i-1]] <- e_pages[i]
-  reordered_list[[2*i]] <- o_pages[i]
+  reordered_list[[2*i-1]] <- even_txt_pages[i]
+  reordered_list[[2*i]] <- odd_txt_pages[i]
 }
 
+reordered_list <- unlist(reordered_list, use.names = TRUE, recursive = FALSE)
 
 
+test <- bind_rows(reordered_list)
 
 
 
