@@ -13,7 +13,7 @@ source("code/functions/image_processing_function.R")
 
 # Single PDF file to several tiff images, importing only the needed pages.  ----
 
-doc1 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 34:61)
+doc1 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 34:61)
 
 
 # move the generated tiff images to the data/raw folder
@@ -63,7 +63,7 @@ odd_pages_list <- lapply(tiff_list, function(image) {
   return(im_c)
 })
 
-
+gc()
 # If RAM issues come here -------------------------------------------------
 
 tiff_file_list <- list.files("data/raw", pattern = "\\.tiff$", full.names = TRUE)
@@ -110,7 +110,7 @@ odd_after_process <- lapply(odd_pages_list, process_image_odd)
 
 # OCR ---------------------------------------------------------------------
 
-even_ocr_text <- lapply(even_after_process, ocr, engine = tesseract("fra")) 
+even_ocr_text <- lapply(even_after_process, ocr, engine = tesseract("fra"))
 
 odd_ocr_text <- lapply(odd_after_process, ocr, engine = tesseract("fra")) 
 
