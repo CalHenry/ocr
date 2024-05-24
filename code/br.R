@@ -498,8 +498,42 @@ dff <- df %>%
 string <- c("Â|hello", "9}world", "b[test", "2||this is a test")
 
 str_replace_all(string, "^[:graph:][\\/\\|\\}\\{\\[\\]]{1,}", "")
-string <- c("—————— “a —  ———————————  —— — | —")
+string <- c("VOSGES.TEST")
 
-if_else((str_count(string, "[:punct:]|[:blank:]|\\|") / str_length(string)) > 0.2, NA, string)
+if_else((str_count(string, "[:punct:]+|[:blank:]|\\|+|[^.]") / str_length(string)) > 0.2, NA, string)
+if_else((str_count(string, "[:punct:]|\\|+") / str_length(string)) > 0.2, NA, string)
 
 str_replace(string, "^[^[a-zA-Z]:alnum:]*", "")
+
+str_count(string, "^[:punct:]|\\|+|[^.]$") / str_length(string)
+str_count(string, "^[[:punct:]]|\\|$") / str_length(string)
+str_locate_all(string, "[[:punct:]&&[^.]]|[:blank:]|\\|")
+str_count(string, "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(string)
+
+string <- c("VOSGES.TEST")
+string <- c("VOSGES.test")
+
+str_locate_all(string, "([:upper:]|[:upper:]&[:punct:]&[:upper:])")
+
+
+
+
+#sert à rien : tenta de faire une var "région"
+# www <- test %>%
+#   filter(str_detect(arg1, "(?:(?<!^)[A-Z]\\b|(?<!^[A-Z[:punct:]]*)\b[A-Z[:punct:]]+\\b(?![A-Z[:punct:]]*$))"))
+# www <- test %>%
+#   filter(str_detect(arg1, "^\\b[A-Z[:punct:]]*\\b$"))
+# 
+# 
+# ,
+# str_detect(arg1, "[[:upper:]]"))
+# 
+# www <- test %>%
+#   mutate(words = str_extract_all(arg1, "[[:upper:]]+[-[:upper:]]*")) %>%
+#   unnest(words) %>%
+#   filter(str_detect(words, "^\\b[A-Z[:punct:]]*\\b$"))
+# 
+# www <- test %>%
+#   mutate(words = str_extract_all(arg1, "([:upper:]|[:upper:]&[:punct:]+&[:upper:])"))
+# 
+# filter(str_detect(words, "([:upper:]|[:upper:]&[:punct:]&[:upper:])"))

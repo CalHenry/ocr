@@ -58,7 +58,7 @@ names(even_txt_pages) <- paste0("txt_", seq_along(even_txt_pages), "_e")
 odd_txt_pages <- processed_ocr_text[seq(29, 56)]
 names(odd_txt_pages) <- paste0("txt_", seq_along(odd_txt_pages), "_o")
 
-reordered_list <- vector("list", (length(e_pages)*2))
+reordered_list <- vector("list", (length(even_txt_pages)*2))
 
 for (i in 1:28) {
   reordered_list[[2*i-1]] <- even_txt_pages[i]
@@ -68,28 +68,31 @@ for (i in 1:28) {
 reordered_list <- unlist(reordered_list, use.names = TRUE, recursive = FALSE)
 
 
+
 test <- bind_rows(reordered_list)
 
 
 
+tes <- test %>%
+  filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
 
 
 
+tes <- test %>%
+  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, text)) %>%
+  mutate(content = if_else(str_length(text) <= 2, NA_character_, content)) %>%
+  filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
 
+tes <- test %>%
+  mutate(content = if_else(str_length(text) == 1, NA_character_, text))
 
+tes <- test %>%
+mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>%
+mutate(if_any((4:length(test)), str_replace(content, "^[^[:alnum:]]+(.*)$", "\\1")))
 
-
-
-
-
-
-
-
-
-
-
-
-
+tes <- test %>%
+  mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>%
+  mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1"))
 
 
 
