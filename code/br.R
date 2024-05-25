@@ -12,7 +12,7 @@ p5 <- p56 %>%
   
 
 #odd
-p56 <- image_read("data/raw/Statistique_industrie_minÃ©rale_1914-1918_51.tiff")
+p56 <- image_read("data/raw/Statistique_industrie_minérale_1914-1918_51.tiff")
 info <- image_info(p56)
 info_width <- info$width
 p5 <- p56 %>%
@@ -57,7 +57,7 @@ p52_list_ocr <- lapply(tiff_list, function(image) {
 
 # old parts ---------------------------------------------------------------
 # crop EVEN
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
 p5_list <- lapply(tiff_list, function(image) {
   p5 <- image %>%
     image_crop((info$width/2)-1280) %>%
@@ -66,7 +66,7 @@ p5_list <- lapply(tiff_list, function(image) {
 })
 
 #crop odd
-doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
+doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
 
 p56 <- image_read(doc1_p56)
 p57 <- image_read(doc1_p57)
@@ -516,9 +516,7 @@ string <- c("VOSGES.test")
 str_locate_all(string, "([:upper:]|[:upper:]&[:punct:]&[:upper:])")
 
 
-
-
-#sert Ã  rien : tenta de faire une var "rÃ©gion"
+#sert Ã  rien : tenta de faire une var "région"
 # www <- test %>%
 #   filter(str_detect(arg1, "(?:(?<!^)[A-Z]\\b|(?<!^[A-Z[:punct:]]*)\b[A-Z[:punct:]]+\\b(?![A-Z[:punct:]]*$))"))
 # www <- test %>%
@@ -537,3 +535,65 @@ str_locate_all(string, "([:upper:]|[:upper:]&[:punct:]&[:upper:])")
 #   mutate(words = str_extract_all(arg1, "([:upper:]|[:upper:]&[:punct:]+&[:upper:])"))
 # 
 # filter(str_detect(words, "([:upper:]|[:upper:]&[:punct:]&[:upper:])"))
+
+d <- tes %>%
+  filter(arg1,
+         rowSums(sapply(function(col) str_detect(tes[[col]], "\\b\\w{11,}\\b"))) > 0)
+
+
+d <- tes %>%
+  mutate(has_long_word = as.integer(rowSums(sapply(c("arg1"), function(col) str_detect(tes[[col]], "\\b\\w{13,}\\b"))) > 0),
+         has_long_number = as.integer(rowSums(sapply(c("arg1"), function(col) str_detect(tes[[col]], "\\b\\d{6,}\\b"))) > 0))
+
+
+# spelling tries
+
+#list_dictionaries()
+
+tes %>%
+  select(arg1) %>% 
+  hunspell(dict = dictionary("fr_FR"))
+
+
+h <- tes$arg2
+
+d <- hunspell(h, dict = dictionary("fr_FR"))
+
+d <- hunspell_suggest(h, dict = dictionary("fr_FR"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

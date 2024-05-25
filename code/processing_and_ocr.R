@@ -13,7 +13,7 @@ source("code/functions/image_processing_function.R")
 
 # Single PDF file to several tiff images, importing only the needed pages.  ----
 
-doc1 <- pdf_convert("data/raw/Statistique_industrie_minÃ©rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 34:61)
+doc1 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 34:61)
 
 
 # move the generated tiff images to the data/raw folder

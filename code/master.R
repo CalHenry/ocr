@@ -6,6 +6,9 @@ library(tidyverse)
 library(tesseract)
 library(pdftools)
 library(magick)
+#
+library(hunspell)
+library(quanteda)
 
 # Master file for ----
 

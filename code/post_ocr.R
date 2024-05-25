@@ -42,15 +42,15 @@ processed_ocr_text <- lapply(ocr_text, split_and_process_ocr_text)
 
 #' Datasets of the ocr are stored in a list
 #' Each ds of the list is a scan.
-#' In eahc dataset:
-#' - text is a var containing the raw text from OCR
-#' - content is the var that received all the modifications.
+#' In each dataset:
+#' - text is the raw text from OCR. We never modify this
+#' - content is the var that received all the modifications, it is a "cleanned" version of text
 #' - the "arg" vars are "content" var cut into pieces, supposed to reproduce the colomns of the table on the scan.
-#' Outputcannot be perfect due to OCR quality.
+#' Outputcannot be perfect due to OCR quality. They receive modifications later in the code
 
 
-#test <- bind_rows(processed_ocr_text)
-
+# This part reoder the datasets so the dataset are in the same order as the pages in the document.
+#We have an even page then the corresponding odd page, and so forth. Suffixes indicates if the page is even or odd.
 
 even_txt_pages <- processed_ocr_text[seq(1, 28)]
 names(even_txt_pages) <- paste0("txt_", seq_along(even_txt_pages), "_e")
@@ -68,34 +68,34 @@ for (i in 1:28) {
 reordered_list <- unlist(reordered_list, use.names = TRUE, recursive = FALSE)
 
 
-
+# TUrn the list to a proper dataset
 test <- bind_rows(reordered_list)
 
 
 
-tes <- test %>%
-  filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
+# tes <- test %>%
+#   filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
+# 
+# 
 
+# tes <- test %>%
+#   mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, text)) %>% #repalce with na if the string has more than 60% of punctuation
+#   mutate(content = if_else(str_length(text) <= 2, NA, content)) %>% # re^place with NA if the string lenght is <=2
+#   filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
+# 
+# tes <- test %>%
+#   mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>% # remove leading non alpha from the string (arg1 is mine names and we don't expect numbers)
+#   mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1")) # same but include number bc it's arg2 to argn
 
-
-tes <- test %>%
-  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, text)) %>%
-  mutate(content = if_else(str_length(text) <= 2, NA_character_, content)) %>%
-  filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
-
-tes <- test %>%
-  mutate(content = if_else(str_length(text) == 1, NA_character_, text))
-
-tes <- test %>%
-mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>%
-mutate(if_any((4:length(test)), str_replace(content, "^[^[:alnum:]]+(.*)$", "\\1")))
 
 tes <- test %>%
-  mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>%
-  mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1"))
-
-
-
+  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, text)) %>% #repalce with na if the string has more than 60% of punctuation
+  mutate(content = if_else(str_length(text) <= 2, NA, content)) %>% # re^place with NA if the string lenght is <=2
+  filter(if_any((3:4), ~ !is.na(.) & . != "")) %>%  #remove rows where arg1 and arg2 are empty (meanninless strings)
+  mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>% # remove leading non alpha from the string (arg1 is mine names and we don't expect numbers)
+  mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1")) %>% # same but include number bc it's arg2 to argn
+  mutate(has_long_word = as.integer(rowSums(sapply(c("arg1"), function(col) str_detect(tes[[col]], "\\b\\w{13,}\\b"))) > 0),
+         has_long_number = as.integer(rowSums(sapply(c("arg1"), function(col) str_detect(tes[[col]], "\\b\\d{6,}\\b"))) > 0)) #dummies
 
 
 
