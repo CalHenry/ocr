@@ -563,6 +563,12 @@ d <- hunspell_suggest(h, dict = dictionary("fr_FR"))
 
 
 
+########
+
+ett <- tes
+
+ett <- ett %>% 
+  unlist(str_split(arg1, "\\s+"))
 
 
 
@@ -570,14 +576,20 @@ d <- hunspell_suggest(h, dict = dictionary("fr_FR"))
 
 
 
+str <- "Ramiette (La)...,........| fdem............... 177 In. n"
+
+str_replace(str, "(?<=\\..)1", "|")
+
+str_replace(str, "(?<=\\.\\.)1", "|")
 
 
 
-
-
-
-
-
+# Function to handle empty "arg2" cells
+handle_empty_arg2 <- function(df) {
+  df %>%
+    mutate_all(~ replace(., . == "", NA)) %>%
+    mutate(across(starts_with("arg"), function(x, i) coalesce(df[[paste0("arg", i)]], x), .names = "arg{i}"), .from = 2) 
+}
 
 
 

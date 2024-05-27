@@ -5,7 +5,7 @@ split_and_process_ocr_text <- function(text) {
     mutate(content = str_replace_all(content, "\\[|\\]|\\}|\\{|\\!", "|")) %>%
     mutate(content = str_replace(content, "\\|\\|", "|")) %>%
     mutate(content = str_replace(content, "^\\s*\\|\\s*", "")) %>% 
-    mutate(content = str_replace(content, "(?<=\\..)1", "|")) %>% 
+    mutate(content = str_replace(content, "(?<=\\.\\.)1", "|")) %>% 
     mutate(content = str_replace_all(content, "(\\.{2,})\\s*([A-Za-z0-9])", "\\1|\\2")) %>%
     mutate(content = str_trim(content, side = "left")) %>% 
     mutate(content = str_replace(content, "(.)(dem)", "i\\2")) %>% 
@@ -40,7 +40,7 @@ split_and_process_ocr_text <- function(text) {
 #  mutate(content = str_replace(content, "\\|\\|", "|")) %>%:
 #   Replace "||" with "|".
 
-#  mutate(content = str_replace(content, "(?<=\\..)1", "|")) %>%:
+# mutate(content = str_replace(content, "(?<=\\.\\.)1", "|")) %>%:
 #   Replace the "1" that have consecutive dots ahead with "|".
 # The ?<=\\.. is a positive lookbehind assertion that checks if there is a period before the "1".
 

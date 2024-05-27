@@ -9,7 +9,8 @@ library(magick)
 #
 library(hunspell)
 library(quanteda)
-
+#
+library(openxlsx)
 # Master file for ----
 
 

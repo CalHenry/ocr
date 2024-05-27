@@ -48,7 +48,6 @@ processed_ocr_text <- lapply(ocr_text, split_and_process_ocr_text)
 #' - the "arg" vars are "content" var cut into pieces, supposed to reproduce the colomns of the table on the scan.
 #' Outputcannot be perfect due to OCR quality. They receive modifications later in the code
 
-
 # This part reoder the datasets so the dataset are in the same order as the pages in the document.
 #We have an even page then the corresponding odd page, and so forth. Suffixes indicates if the page is even or odd.
 
@@ -89,7 +88,7 @@ test <- bind_rows(reordered_list)
 
 
 tes <- test %>%
-  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, text)) %>% #repalce with na if the string has more than 60% of punctuation
+  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, content)) %>% #repalce with na if the string has more than 60% of punctuation
   mutate(content = if_else(str_length(text) <= 2, NA, content)) %>% # re^place with NA if the string lenght is <=2
   filter(if_any((3:4), ~ !is.na(.) & . != "")) %>%  #remove rows where arg1 and arg2 are empty (meanninless strings)
   mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>% # remove leading non alpha from the string (arg1 is mine names and we don't expect numbers)
@@ -97,6 +96,8 @@ tes <- test %>%
   mutate(has_long_word = as.integer(rowSums(sapply(c("arg1"), function(col) str_detect(tes[[col]], "\\b\\w{13,}\\b"))) > 0),
          has_long_number = as.integer(rowSums(sapply(c("arg1"), function(col) str_detect(tes[[col]], "\\b\\d{6,}\\b"))) > 0)) #dummies
 
+
+#write.xlsx(test, "data/int/test.xlsx")
 
 
 
