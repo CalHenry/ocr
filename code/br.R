@@ -12,7 +12,7 @@ p5 <- p56 %>%
   
 
 #odd
-p56 <- image_read("data/raw/Statistique_industrie_minérale_1914-1918_51.tiff")
+p56 <- image_read("data/raw/Statistique_industrie_min?rale_1914-1918_51.tiff")
 info <- image_info(p56)
 info_width <- info$width
 p5 <- p56 %>%
@@ -57,7 +57,7 @@ p52_list_ocr <- lapply(tiff_list, function(image) {
 
 # old parts ---------------------------------------------------------------
 # crop EVEN
-doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
+doc1_p56 <- pdf_convert("data/raw/Statistique_industrie_min?rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 56)
 p5_list <- lapply(tiff_list, function(image) {
   p5 <- image %>%
     image_crop((info$width/2)-1280) %>%
@@ -66,7 +66,7 @@ p5_list <- lapply(tiff_list, function(image) {
 })
 
 #crop odd
-doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_minérale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
+doc1_p57 <- pdf_convert("data/raw/Statistique_industrie_min?rale_1914-1918.pdf", format = "tiff", dpi = 400, pages = 57)
 
 p56 <- image_read(doc1_p56)
 p57 <- image_read(doc1_p57)
@@ -516,7 +516,7 @@ string <- c("VOSGES.test")
 str_locate_all(string, "([:upper:]|[:upper:]&[:punct:]&[:upper:])")
 
 
-#sert Ã  rien : tenta de faire une var "région"
+#sert Ã  rien : tenta de faire une var "r?gion"
 # www <- test %>%
 #   filter(str_detect(arg1, "(?:(?<!^)[A-Z]\\b|(?<!^[A-Z[:punct:]]*)\b[A-Z[:punct:]]+\\b(?![A-Z[:punct:]]*$))"))
 # www <- test %>%
@@ -571,11 +571,6 @@ ett <- ett %>%
   unlist(str_split(arg1, "\\s+"))
 
 
-
-
-
-
-
 str <- "Ramiette (La)...,........| fdem............... 177 In. n"
 
 str_replace(str, "(?<=\\..)1", "|")
@@ -594,9 +589,75 @@ handle_empty_arg2 <- function(df) {
 
 
 
+tes <- test %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  mutate(across(4:ncol(test), function(x) coalesce(x, first(na.omit(x))), .names = "arg{col}"))
 
 
+tes <- test %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>%
+  mutate(across(4:ncol(test), \(x) coalesce(x, na.omit(x)[1]))) %>%
+  ungroup()
 
+tes <- test %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>%
+  mutate(across(4:ncol(test), ~replace_na(., first(na.omit(.)))), .names = "arg{col}") %>%
+  ungroup()
+
+
+tes <- test %>%
+  mutate(across(4:ncol(test), ~replace_na(., 0))) %>%
+  mutate(across(4:ncol(test), ~na.locf(., na.rm = FALSE)))
+
+tes <- test %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>% 
+  mutate(across(4:ncol(test), ~na.locf(., na.rm = FALSE))) %>% 
+  ungroup()
+
+tes <- test %>%
+  gather(key = "variable", value = "value", 4:ncol(test)) %>%
+  group_by(variable) %>%
+  fill(value, .direction = "updown") %>%
+  spread(key = "variable", value = "value")
+
+tes <- test %>% 
+  rowwise() %>%
+  mutate(across(4:ncol(test), replace_na(coalesce(.))))
+
+
+tes <- test %>% 
+  rowwise() %>%
+  mutate(across(4:ncol(test), 
+                ~replace_na(., .[names(.) == "arg2"])))
+
+tes <- test %>% 
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>% 
+    coalesce() %>% 
+  ungroup()
+
+tes <- test %>% 
+  rowwise() %>% 
+  mutate(across(4:ncol(test),
+    er = do.call(coalesce, test))) %>% 
+  ungroup()
+
+
+tes <- test %>% 
+  rowwise() %>% 
+  mutate(across(4:ncol(test), re = list(coalesce(!!!.)))) %>% 
+  ungroup()
+
+
+tes <- test %>% 
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  select(4:ncol(test)) %>% 
+  rowwise() %>% 
+  mutate(re = list(coalesce(!!!.))) %>% 
+  ungroup()
 
 
 
