@@ -656,16 +656,74 @@ tes <- test %>%
   mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
   select(4:ncol(test)) %>% 
   rowwise() %>% 
-  mutate(re = list(coalesce(!!!.))) %>% 
+  mutate(re = coalesce(!!!.)) %>% 
+  ungroup()
+
+tes <- test %>% 
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>% 
+  mutate(re = coalesce(!!!.)) 
+
+tes <- test %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg2, arg3)) %>% 
+  ungroup()
+
+tes <- test %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) <= 2, NA, .)) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg2, arg3)) %>% 
+  mutate(arg3 = if_else(arg3 == arg2, NA, arg3))
+
+tes <- tes %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg2, arg4)) %>% 
+  mutate(arg4 = if_else(arg4 == arg2, NA, arg3))
+
+tes <- tes %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg2, arg5)) %>% 
+  mutate(arg5 = if_else(arg5 == arg2, NA, arg3))
+
+tes <- tes %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg2, arg6)) %>% 
+  mutate(arg6 = if_else(arg6 == arg2, NA, arg3))
+
+d <-  paste0("arg", 3:ncol(test))
+
+tes <- test %>%
+  mutate(across(everything(), ~ ifelse(. == "" | nchar(.) == 1, NA, .))) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg3, arg4, arg5, arg6),
+         across(4:ncol(test), ~ ifelse(.x == arg2, NA, .x))) %>% 
   ungroup()
 
 
+tes <- test %>% 
+  mutate_all(~ ifelse(. == "" | nchar(.) == 2, paste0(.,"XXXXXXXXXXXXXXX"), .))
+  
+tes <- test %>%
+  mutate(across(4:ncol(test), ~ gsub("^.{1,2}$", "", as.character(.))))
 
 
+tes <- test %>%
+  rowwise() %>% 
+  mutate(arg1 = ifelse(grepl("^(La|Le|L')", arg2), paste(lag(arg1), arg2, sep = " "), arg1)) %>% 
+  ungroup()
 
-
-
-
+tes <- test %>%
+  mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
+    if (str_detect(x, "\\([a-zA-Z]+\\)")) {
+      return(x)
+    } else {
+      return(paste0(str_extract(x, "([^a-zA-Z])"), "(", str_extract(x, "(La|Le|L')"), ")", str_extract(x, "([^a-zA-Z])")))
+    }
+  }))
 
 
 
