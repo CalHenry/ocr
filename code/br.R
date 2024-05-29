@@ -661,20 +661,6 @@ tes <- test %>%
 
 d <-  paste0("arg", 3:ncol(test))
 
-# tes <- test %>%
-#   mutate(across(everything(), ~ ifelse(. == "" | nchar(.) == 1, NA, .))) %>%
-#   rowwise() %>%
-#   mutate(arg2 = coalesce(arg3, arg4, arg5, arg6),
-#          across(4:ncol(test), ~ ifelse(.x == arg2, NA, .x))) %>% 
-#   ungroup()
-# 
-# 
-# tes <- tes %>% 
-#   mutate_all(~ ifelse(. == "" | nchar(.) <= 2, paste0(.,"XXXXXXXXXXXXXXX"), .))
-#   
-# tes <- test %>%
-#   mutate(across(4:ncol(test), ~ gsub("^.{1,2}$", "", as.character(.))))
-
 tes <- test %>%
   mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
     if (str_detect(x, "\\([a-zA-Z]+\\)")) {
@@ -687,3 +673,73 @@ tes <- test %>%
   rowwise() %>%
   mutate(arg2 = coalesce(arg2, arg3)) %>% 
   ungroup()
+
+str <- c("PR ococcococoool 1,230 66,200 123  .  fzfz")
+str <- c("PR ococcococoool 123 66,200 123  .  fzfz")
+#3
+str_extract(str, "(?<!\\d[.,])\\d{1,3}(?!\\d)(?=\\s*$|\\s+\\D)")
+#2
+nth(unlist(str_extract_all(str, "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)")), 2)
+
+
+last(unlist(str_extract_all(str, "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)")))
+
+str_extract_all(str, "(?<!\\d[.,\\s])\\d{1,3}[.,\\s]\\d{1,3}(?!\\d)")
+
+
+
+
+q <- "PR ococcococoool 1,230 66,200 123  .  fzfz"
+
+str_extract_all(q, "\\s*\\d+[^\\|]*")
+
+test$content[[97]]
+
+te <- test %>% 
+  mutate(digits = str_extract_all(content, "\\s*(\\d{2,}[^\\|]*", simplify = TRUE)) %>% 
+  mutate(digitss = str_replace_all(digits[,1], "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)", "\\|\\0\\|"))
+
+te <- test %>% 
+  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", simplify = TRUE)) %>% 
+  mutate(digitss = str_replace_all(digits[,1], "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)", "\\|\\0\\|"))
+
+# a faire :
+#' regarder pour recoller les digits seul au nombre 1 (imparfait donc clc)
+#' mettre entre pipe les autres nombres
+
+
+"\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

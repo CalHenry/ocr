@@ -70,41 +70,28 @@ reordered_list <- unlist(reordered_list, use.names = TRUE, recursive = FALSE)
 # TUrn the list to a proper dataset
 test <- bind_rows(reordered_list)
 
-
-
 # tes <- test %>%
 #   filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
 # 
-# 
 
-# tes <- test %>%
-#   mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, text)) %>% #repalce with na if the string has more than 60% of punctuation
-#   mutate(content = if_else(str_length(text) <= 2, NA, content)) %>% # re^place with NA if the string lenght is <=2
-#   filter(if_any((3:4), ~ !is.na(.) & . != "")) #remove rows where arg1 and arg2 are empty (meanninless strings)
-# 
-# tes <- test %>%
-#   mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>% # remove leading non alpha from the string (arg1 is mine names and we don't expect numbers)
-#   mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1")) # same but include number bc it's arg2 to argn
-
-
-tes <- test %>%
-  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, content)) %>% #repalce with na if the string has more than 60% of punctuation
+test <- test %>%
+  mutate(content = if_else((str_count(text , "[[:punct:]&&[^.]]|[:blank:]|\\|") / str_length(content)) > 0.6, NA, content)) %>% #repllce with na if the string has more than 60% of punctuation
   mutate(content = if_else(str_length(text) <= 2, NA, content)) %>% # replace with NA if the string lenght is <=2
   filter(if_any((3:4), ~ !is.na(.) & . != "")) %>%  #remove rows where arg1 and arg2 are empty (meanninless strings)
   mutate(arg1 = str_replace(arg1, "^[^a-zA-Z]+(.*)$", "\\1")) %>% # remove leading non alpha from the string (arg1 is mine names and we don't expect numbers)
-  mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1")) %>% # same but include number bc it's arg2 to argn
+  mutate_at(vars(4:ncol(test)), ~ str_replace(., "^[^[:alnum:]]+(.*)$", "\\1")) # same but include number bc it's arg2 to argn
 
-tes <- tes %>%
+test <- tes %>%
   mutate(has_long_word = as.integer(rowSums(sapply(c("arg1"),
                                                    function(col) str_detect(tes[[col]], "\\b\\w{13,}\\b"))) > 0), 
          has_long_number = as.integer(rowSums(sapply(c("arg1"),
                                                    function(col) str_detect(tes[[col]], "\\b\\d{6,}\\b"))) > 0)) 
-#Dummies to help identfy weird vaues. 
+# Dummies to help identfy weird vaues. 
 # first one for words (13+ char), second for numbers (6+ digits)
 
-tes <- test %>%
+test <- test %>%
   mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
-    if (str_detect(x, "\\([a-zA-Z]+\\)")) {
+    if (is.na(x) || str_detect(x, "\\([a-zA-Z]+\\)")) {
       return(x)
     } else {
       return(paste0(str_extract(x, "([^a-zA-Z])"), "(", str_extract(x, "(La|Le|L')"), ")", str_extract(x, "([^a-zA-Z])")))
@@ -120,7 +107,7 @@ tes <- test %>%
 #' 1. first mutate: goal: find the Le, La and L' and enclose them into parenthesis if they are not
 #' str_replace_all() detect the Le/La/L'
 #' the "if" statement is used to make the code do nothing if the pattern is already into parenthesis.
-#' if (str_detect(x, "\\([a-zA-Z]+\\)")) 
+#' if (str_detect(x, "\\([a-zA-Z]+\\)")), if the pattern match, do nothing.
 #' the else add a "(" or a ")" to the find pattern
 #' 2. second mutate: replace all empty string or string that contains 2 or less charaters to proper NA
 #' 3. Rowwise, third mutate: if arg2 is NA, copy the content of arg3 to arg2.
