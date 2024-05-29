@@ -1,6 +1,7 @@
 split_and_process_ocr_text <- function(text) {
   processed_dataset <- tibble(text = unlist(strsplit(text, "\n"))) %>%
     mutate(content = str_replace(text, "\\.\\s+\\.", "..")) %>%
+    mutate(content = str_replace(content, "\\.\\,\\.", "..")) %>%
     mutate(content = str_replace(content, "^(\\p{L})\\s", "")) %>% 
     mutate(content = str_replace_all(content, "\\[|\\]|\\}|\\{|\\!", "|")) %>%
     mutate(content = str_replace(content, "\\|\\|", "|")) %>%

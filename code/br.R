@@ -578,17 +578,6 @@ str_replace(str, "(?<=\\..)1", "|")
 str_replace(str, "(?<=\\.\\.)1", "|")
 
 
-
-# Function to handle empty "arg2" cells
-handle_empty_arg2 <- function(df) {
-  df %>%
-    mutate_all(~ replace(., . == "", NA)) %>%
-    mutate(across(starts_with("arg"), function(x, i) coalesce(df[[paste0("arg", i)]], x), .names = "arg{i}"), .from = 2) 
-}
-
-
-
-
 tes <- test %>%
   mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
   mutate(across(4:ncol(test), function(x) coalesce(x, first(na.omit(x))), .names = "arg{col}"))
@@ -616,12 +605,6 @@ tes <- test %>%
   rowwise() %>% 
   mutate(across(4:ncol(test), ~na.locf(., na.rm = FALSE))) %>% 
   ungroup()
-
-tes <- test %>%
-  gather(key = "variable", value = "value", 4:ncol(test)) %>%
-  group_by(variable) %>%
-  fill(value, .direction = "updown") %>%
-  spread(key = "variable", value = "value")
 
 tes <- test %>% 
   rowwise() %>%
@@ -676,45 +659,21 @@ tes <- test %>%
   mutate(arg2 = coalesce(arg2, arg3)) %>% 
   mutate(arg3 = if_else(arg3 == arg2, NA, arg3))
 
-tes <- tes %>%
-  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
-  rowwise() %>%
-  mutate(arg2 = coalesce(arg2, arg4)) %>% 
-  mutate(arg4 = if_else(arg4 == arg2, NA, arg3))
-
-tes <- tes %>%
-  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
-  rowwise() %>%
-  mutate(arg2 = coalesce(arg2, arg5)) %>% 
-  mutate(arg5 = if_else(arg5 == arg2, NA, arg3))
-
-tes <- tes %>%
-  mutate_all(~ ifelse(. == "" | nchar(.) == 1, NA, .)) %>%
-  rowwise() %>%
-  mutate(arg2 = coalesce(arg2, arg6)) %>% 
-  mutate(arg6 = if_else(arg6 == arg2, NA, arg3))
-
 d <-  paste0("arg", 3:ncol(test))
 
-tes <- test %>%
-  mutate(across(everything(), ~ ifelse(. == "" | nchar(.) == 1, NA, .))) %>%
-  rowwise() %>%
-  mutate(arg2 = coalesce(arg3, arg4, arg5, arg6),
-         across(4:ncol(test), ~ ifelse(.x == arg2, NA, .x))) %>% 
-  ungroup()
-
-
-tes <- test %>% 
-  mutate_all(~ ifelse(. == "" | nchar(.) == 2, paste0(.,"XXXXXXXXXXXXXXX"), .))
-  
-tes <- test %>%
-  mutate(across(4:ncol(test), ~ gsub("^.{1,2}$", "", as.character(.))))
-
-
-tes <- test %>%
-  rowwise() %>% 
-  mutate(arg1 = ifelse(grepl("^(La|Le|L')", arg2), paste(lag(arg1), arg2, sep = " "), arg1)) %>% 
-  ungroup()
+# tes <- test %>%
+#   mutate(across(everything(), ~ ifelse(. == "" | nchar(.) == 1, NA, .))) %>%
+#   rowwise() %>%
+#   mutate(arg2 = coalesce(arg3, arg4, arg5, arg6),
+#          across(4:ncol(test), ~ ifelse(.x == arg2, NA, .x))) %>% 
+#   ungroup()
+# 
+# 
+# tes <- tes %>% 
+#   mutate_all(~ ifelse(. == "" | nchar(.) <= 2, paste0(.,"XXXXXXXXXXXXXXX"), .))
+#   
+# tes <- test %>%
+#   mutate(across(4:ncol(test), ~ gsub("^.{1,2}$", "", as.character(.))))
 
 tes <- test %>%
   mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
@@ -723,8 +682,8 @@ tes <- test %>%
     } else {
       return(paste0(str_extract(x, "([^a-zA-Z])"), "(", str_extract(x, "(La|Le|L')"), ")", str_extract(x, "([^a-zA-Z])")))
     }
-  }))
-
-
-
-
+  })) %>%
+  mutate_all(~ ifelse(. == "" | nchar(.) <= 2, NA, .)) %>%
+  rowwise() %>%
+  mutate(arg2 = coalesce(arg2, arg3)) %>% 
+  ungroup()
