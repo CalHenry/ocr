@@ -712,7 +712,21 @@ te <- test %>%
 
 
 
-
+te <- test %>%
+  mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
+    if (is.na(x) || str_detect(x, "\\([a-zA-Z]+\\)")) {
+      return(x)
+    } else {
+      return(paste0(str_extract(x, "([^a-zA-Z])"), "(", str_extract(x, "(La|Le|L')"), ")", str_extract(x, "([^a-zA-Z])")))
+    }
+  })) %>%
+  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", simplify = TRUE)) %>%
+  mutate(digitss = sapply(digits[,1], function(x) {
+    return(str_replace_all(x, "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)", "\\|\\0\\|"))
+  })) %>%
+  mutate(content = str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", function(x) {
+    return(paste0("|", x, "|"))
+  }))
 
 
 
