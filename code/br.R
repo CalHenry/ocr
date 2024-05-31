@@ -728,19 +728,26 @@ te <- test %>%
     return(paste0("|", x, "|"))
   }))
 
+te <- te %>%
+  mutate(
+    digitsss := str_replace_all(digitss, "\\|([0-9,]+)\\|\\s([:alnum:]+)\\s\\|", "|\\1 \\2|")) %>% 
+  mutate(
+    digitsss = str_replace_all(digitss, "\\|\\s\\|", " \\|")
+  )
 
 
 
 
 
+str <- "|1,395| |4,525| 39"
+
+str_detect(str, "\\|\\s\\|")
+str_locate_all(str, "\\|([0-9,]+)\\|\\s([:alnum:]+)\\s\\|")
+
+str_replace_all(str, "\\|\\s\\|", " \\|")
 
 
-
-
-
-
-
-
+str_detect(str, "[:alnum:]")
 
 
 
