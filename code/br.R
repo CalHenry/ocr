@@ -713,51 +713,98 @@ te <- test %>%
 
 
 te <- test %>%
-  mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
-    if (is.na(x) || str_detect(x, "\\([a-zA-Z]+\\)")) {
-      return(x)
-    } else {
-      return(paste0(str_extract(x, "([^a-zA-Z])"), "(", str_extract(x, "(La|Le|L')"), ")", str_extract(x, "([^a-zA-Z])")))
-    }
-  })) %>%
-  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", simplify = TRUE)) %>%
+  # mutate(content = str_replace_all(content, "([^a-zA-Z])(La|Le|L')([^a-zA-Z])", function(x) {
+  #   if (is.na(x) || str_detect(x, "\\([a-zA-Z]+\\)")) {
+  #     return(x)
+  #   } else {
+  #     return(paste0(str_extract(x, "([^a-zA-Z])"), "(", str_extract(x, "(La|Le|L')"), ")", str_extract(x, "([^a-zA-Z])")))
+  #   }
+  # })) %>%
+  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)", simplify = TRUE)) %>%
   mutate(digitss = sapply(digits[,1], function(x) {
     return(str_replace_all(x, "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)", "\\|\\0\\|"))
-  })) %>%
-  mutate(content = str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", function(x) {
-    return(paste0("|", x, "|"))
-  }))
+  })) #%>%
+  # mutate(content = str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", function(x) {
+  #   return(paste0("|", x, "|"))
+  # }))
 
 te <- te %>%
   mutate(
-    digitsss := str_replace_all(digitss, "\\|([0-9,]+)\\|\\s([:alnum:]+)\\s\\|", "|\\1 \\2|")) %>% 
+    digitsss = str_replace_all(digitss, "\\|([0-9,]+)\\|\\s([:alnum:]+)\\s\\|", "|\\1 \\2|")) %>% 
   mutate(
     digitsss = str_replace_all(digitss, "\\|\\s\\|", " \\|")
   )
 
 
 
-
-
-str <- "|1,395| |4,525| 39"
+str <- "Buxière-la-Grue........... idem................310 16,800 95"
+str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", "\\|\\0\\|")
 
 str_detect(str, "\\|\\s\\|")
-str_locate_all(str, "\\|([0-9,]+)\\|\\s([:alnum:]+)\\s\\|")
+
+str_extract_all(str, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")
+str_extract_all(str, "\\s*\\d{1,3}[.,]*\\d{1,3}\\s*")
+str_extract_all(str, "([:digit:]+|[.{1},\\s*])+")
+
+str_extract_all(str, "\\b\\d+(?:[.,]\\d+)*")
 
 str_replace_all(str, "\\|\\s\\|", " \\|")
 
 
 str_detect(str, "[:alnum:]")
 
+sd <- te %>% 
+  select("content", "digitsss") %>% 
+  mutate(con = str_replace_all(content, "\\|", "")) %>% 
+  mutate(digits = str_extract_all(con, "\\s*\\d{1,3}[.,]*\\d{1,3}\\s*\\|[^\\|]*"))
 
 
 
+str <- "..| 659 50 || 97,800 || 647"
+str <- ". | 659 50 | 97,800 || 647"
+
+str_locate_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*.*$)")
+
+
+test_processed_ocr_text <- lapply(ocr_text, split_and_process_ocr_text_copie)
+
+even_txt_pages <- test_processed_ocr_text[seq(1, 28)]
+names(even_txt_pages) <- paste0("txt_", seq_along(even_txt_pages), "_e")
+
+odd_txt_pages <- test_processed_ocr_text[seq(29, 56)]
+names(odd_txt_pages) <- paste0("txt_", seq_along(odd_txt_pages), "_o")
+
+reordered_list <- vector("list", (length(even_txt_pages)*2))
+
+for (i in 1:28) {
+  reordered_list[[2*i-1]] <- even_txt_pages[i]
+  reordered_list[[2*i]] <- odd_txt_pages[i]
+}
+
+reordered_list <- unlist(reordered_list, use.names = TRUE, recursive = FALSE)
+
+
+# TUrn the list to a proper dataset
+test <- bind_rows(reordered_list)
 
 
 
+wx <- test %>% 
+  mutate(digits = str_match_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
+  #mutate(didi = bind_cols(digits[,1], digits[,2], digits[,3])) %>% 
+  mutate(dididi = unlist(digits))
 
 
+unlist(wx$digits)
 
+sample_list <- list(
+  c("", 56.78, 90.12),
+  c(23.45, 67.89),
+  c(34.56, 78.90, 12.34, 56.78)
+)
+
+
+unlist(sample_list)
 
 
 
