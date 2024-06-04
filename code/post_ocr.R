@@ -83,9 +83,9 @@ test <- test %>%
 
 test <- test %>%
   mutate(has_long_word = as.integer(rowSums(sapply(c("arg1"),
-                                                   function(col) str_detect(tes[[col]], "\\b\\w{13,}\\b"))) > 0), 
+                                                   function(col) str_detect(test[[col]], "\\b\\w{13,}\\b"))) > 0), 
          has_long_number = as.integer(rowSums(sapply(c("arg1"),
-                                                   function(col) str_detect(tes[[col]], "\\b\\d{6,}\\b"))) > 0)) 
+                                                   function(col) str_detect(test[[col]], "\\b\\d{6,}\\b"))) > 0)) 
 # Dummies to help identfy weird vaues. 
 # first one for words (13+ char), second for numbers (6+ digits)
 

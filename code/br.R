@@ -728,6 +728,30 @@ te <- test %>%
   #   return(paste0("|", x, "|"))
   # }))
 
+
+te <- test %>%
+  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
+  mutate(digitss = map_chr(digits, function(x) paste(x, collapse = ", ")))
+
+w <- te$digits
+w <- unlist(w)
+
+
+te <- test %>%
+  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
+  mutate(digitss = str_replace_all(digits, "c(\"", ""))
+
+te <- test %>%
+  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
+  mutate(digitss = str_replace_all(digits, "\"\\)", ""))
+
+
+writeLines("c(\"")
+writeLines("\")")
+
+mutate(digitss = str_replace_all(digits, c("(c(\\")|(", ")|(")\\)", ""))
+
+
 te <- te %>%
   mutate(
     digitsss = str_replace_all(digitss, "\\|([0-9,]+)\\|\\s([:alnum:]+)\\s\\|", "|\\1 \\2|")) %>% 
@@ -736,9 +760,15 @@ te <- te %>%
   )
 
 
+c(" 116 36", " 44832 ", " 256")"
 
-str <- "Buxière-la-Grue........... idem................310 16,800 95"
+str <- "Buxi?re-la-Grue........... idem................310 16,800 95"
 str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", "\\|\\0\\|")
+
+str <- "PerrigÃ¼y.........|sso..| idem...|73| 3,220 30"
+str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", "\\|\\0\\|")
+
+
 
 str_detect(str, "\\|\\s\\|")
 
@@ -793,21 +823,6 @@ wx <- test %>%
   mutate(digits = str_match_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
   #mutate(didi = bind_cols(digits[,1], digits[,2], digits[,3])) %>% 
   mutate(dididi = unlist(digits))
-
-
-unlist(wx$digits)
-
-sample_list <- list(
-  c("", 56.78, 90.12),
-  c(23.45, 67.89),
-  c(34.56, 78.90, 12.34, 56.78)
-)
-
-
-unlist(sample_list)
-
-
-
 
 
 
