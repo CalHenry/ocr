@@ -806,9 +806,9 @@ str_view_all(str, "(\\d{1,3}[.,]\\d{1,3})")
 str_replace_all(str, "\\d{1,3}\\s+", "\\|\\0\\|")
 str_detect(str, "(,|.)")
 
-
-str_view_all(str, "\\|\\s*\\|")
-str_detect(str, "\\|\\s\\|")
+str <- "Grand-Vitlard (Le).........| Meme...||429 ||507 ||11 ||:"
+str_view(str, "\\|\\s*\\|")
+str_detect(str, "\\|\\s*\\|")
 
 str_extract_all(str, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")
 str_extract_all(str, "\\s*\\d{1,3}[.,]*\\d{1,3}\\s*")
@@ -826,12 +826,12 @@ sd <- te %>%
   mutate(con = str_replace_all(content, "\\|", "")) %>% 
   mutate(digits = str_extract_all(con, "\\s*\\d{1,3}[.,]*\\d{1,3}\\s*\\|[^\\|]*"))
 
+str_replace(str, "^\\s*\\|+\\s*", "")
 
-
-str <- "..| 659 50 || 97,800 || 647"
+str <- "|| pervon (Le) serrer... Hem...) 16 Von u |"
 str <- ". | 659 50 | 97,800 || 647"
 
-str_locate_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*.*$)")
+str_replace_all(str, "^\\s*(\\||\\||)\\s*", "\\")
 
 
 test_processed_ocr_text <- lapply(ocr_text, split_and_process_ocr_text_copie)
@@ -862,5 +862,13 @@ wx <- test %>%
   #mutate(didi = bind_cols(digits[,1], digits[,2], digits[,3])) %>% 
   mutate(dididi = unlist(digits))
 
+str <- "Grand-Vallon (Le)........| idem.…...............) 162 43 5"
+str_view_all(str, "\\[|\\]|\\}|\\{|\\!|\\.{2,}\\)")
+str_view_all(str, "(?<=\\.{2,4})\\)")
+
+str_replace_all(str, "\\t", "")
+
+
+str_replace_all(str, "\\.{2,}\\)", "|")
 
 
