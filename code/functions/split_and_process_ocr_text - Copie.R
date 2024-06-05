@@ -20,10 +20,18 @@ split_and_process_ocr_text_copie <- function(text) {
     })) %>%
     mutate(content = str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", function(x) {
       return(paste0("|", x, "|"))
-    })) %>% 
+    })) %>%
+    mutate(contents = 
+             {
+               if (any(str_detect(content, "(\\d{1,3}[.,]{1}\\d{1,3})"))) {
+                 str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3})", "\\|\\0\\|")
+               } else {
+                 str_replace_all(content, "\\d{1,3}\\s+", "\\|\\0\\|")
+               }
+             }) %>% 
 #end of add
-    mutate(content = str_replace(content, "\\|\\|", "|")) %>%
-    mutate(arg = str_split(content, "(?<!\\d)\\.+(?!\\d)")) %>% 
+    mutate(contents = str_replace_all(contents, "\\|\\s*\\|", "|")) %>% 
+    mutate(arg = str_split(contents, "(?<!\\d)\\.+(?!\\d)")) %>% 
     mutate(arg = as.character(arg)) %>% 
     mutate(arg = str_replace_all(arg, "\", \"", "")) %>%
     mutate(arg = str_replace_all(arg, "^c\\(\"|\"\\)$", "")) %>% 

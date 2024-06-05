@@ -675,7 +675,7 @@ tes <- test %>%
   ungroup()
 
 str <- c("PR ococcococoool 1,230 66,200 123  .  fzfz")
-str <- c("PR ococcococoool 123 66,200 123  .  fzfz")
+str <- c("PR ococcococoool 123 45 66,200 123  .  fzfz")
 #3
 str_extract(str, "(?<!\\d[.,])\\d{1,3}(?!\\d)(?=\\s*$|\\s+\\D)")
 #2
@@ -684,8 +684,10 @@ nth(unlist(str_extract_all(str, "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)")), 2)
 
 last(unlist(str_extract_all(str, "(?<!\\d[.,])\\d{1,3}[.,]\\d{1,3}(?!\\d)")))
 
-str_extract_all(str, "(?<!\\d[.,\\s])\\d{1,3}[.,\\s]\\d{1,3}(?!\\d)")
+str_extract_all(str, "(?<!\\d{1,3}[.,\\s])\\d{1,3}[.,\\s]\\d{1,3}(?!\\d)")
+str_extract_all(str, "(?<!\\d{1,3}[.,\\s])\\d{1,3}[.,\\s]\\d{1,3}(?!\\d)")
 
+str_view(str, "(?<!\\d[.,\\s])\\d{1,3}[.,\\s]\\d{1,3}(?!\\d)")
 
 
 
@@ -728,28 +730,12 @@ te <- test %>%
   #   return(paste0("|", x, "|"))
   # }))
 
-
+#good one
 te <- test %>%
   mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
-  mutate(digitss = map_chr(digits, function(x) paste(x, collapse = ", ")))
+  mutate(digits = map_chr(digits, function(x) paste(x, collapse = ", "))) %>% 
+  mutate(digits = str_replace_all(digits, "\\s*,\\s+", " "))
 
-w <- te$digits
-w <- unlist(w)
-
-
-te <- test %>%
-  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
-  mutate(digitss = str_replace_all(digits, "c(\"", ""))
-
-te <- test %>%
-  mutate(digits = str_extract_all(content, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")) %>%
-  mutate(digitss = str_replace_all(digits, "\"\\)", ""))
-
-
-writeLines("c(\"")
-writeLines("\")")
-
-mutate(digitss = str_replace_all(digits, c("(c(\\")|(", ")|(")\\)", ""))
 
 
 te <- te %>%
@@ -760,7 +746,7 @@ te <- te %>%
   )
 
 
-c(" 116 36", " 44832 ", " 256")"
+str <- "PR ococcococoool 1,230 66,200 123  .  fzfz"
 
 str <- "Buxi?re-la-Grue........... idem................310 16,800 95"
 str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", "\\|\\0\\|")
@@ -768,8 +754,60 @@ str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", "\\|\\0\\|")
 str <- "Perrigüy.........|sso..| idem...|73| 3,220 30"
 str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3}[^\\|]*)", "\\|\\0\\|")
 
+result <- str %>%
+  str_extract_all("\\b\\d{1,3}[.,]?\\d{1,3}\\b") %>%
+  unlist() %>%
+  str_replace_all("(\\b\\d{1,3})[.,](\\d{1,3}\\b)", "\\1|\\2") %>%
+  str_replace_all("(\\b\\d{1,3}\\b)", "|\\1|")
 
 
+
+str <- "PR ococcococoool 1,230 66,200 123  .  fzfz"
+str <- "PR ococcococoool 123 66 200 .  fzfz"
+te <- te %>% 
+  mutate(test = 
+  {
+    if (str_detect(content, "(\\d{1,3}[.,]\\d{1,3})")) {
+      str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3})", "\\|\\0\\|")
+      
+    } else {
+      str_replace_all(content, "\\d{1,3}\\s+", "\\|\\0\\|")    }
+  }
+)
+
+te <- te %>% 
+  mutate(content = 
+           {
+             if (any(str_detect(content, "(\\d{1,3}[.,]\\d{1,3})"))) {
+               str_replace_all(content, "\\s*(\\d{1,3}[.,]\\d{1,3})", "\\|\\0\\|")
+             } else {
+               str_replace_all(content, "\\d{1,3}\\s+", "\\|\\0\\|")
+             }
+           }
+  ) 
+
+str <- "Grand-Vitlard (Le).........| Meme...|429 507 11 |:"
+str <- "Commentry..............| idem...............|| 2,075| 39,812| 252|"
+{
+  if (any(str_detect(str, "(\\d{1,3}[.,]\\d{1,3})"))) {
+    str_replace_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3})", "\\|\\0\\|")
+  } else {
+    str_replace_all(str, "\\d{1,3}\\s+", "\\|\\0\\|")
+  }
+}
+
+str_replace_all(str, "\\|\\s*\\|", "|")
+split_and_process_ocr_text_copie(str)
+
+
+str_view_all(str, "\\s*(\\d{1,3}[.,]\\d{1,3})")
+str_view_all(str, "(\\d{1,3}[.,]\\d{1,3})")
+
+str_replace_all(str, "\\d{1,3}\\s+", "\\|\\0\\|")
+str_detect(str, "(,|.)")
+
+
+str_view_all(str, "\\|\\s*\\|")
 str_detect(str, "\\|\\s\\|")
 
 str_extract_all(str, "\\s*(\\d{1,3}[.,]*\\d{1,3}[^\\|]*)")
