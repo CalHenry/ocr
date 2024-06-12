@@ -852,7 +852,7 @@ for (i in 1:28) {
 reordered_list <- unlist(reordered_list, use.names = TRUE, recursive = FALSE)
 
 
-# TUrn the list to a proper dataset
+# Turn the list to a proper dataset
 test <- bind_rows(reordered_list)
 
 
