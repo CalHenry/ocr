@@ -3,7 +3,7 @@ split_and_process_ocr_text_copie <- function(text) {
     mutate(content = str_replace(text, "\\.\\s+\\.", "..")) %>%
     mutate(content = str_replace(content, "\\.\\,\\.", "..")) %>%
     mutate(content = str_replace(content, "^(\\p{L})\\s", "")) %>% 
-    mutate(content = str_replace_all(content, "\\[|\\]|\\}|\\{|\\!|(,<=\\.\\)\\)", "|")) %>%
+    mutate(content = str_replace_all(content, "\\[|\\]|\\}|\\{|\\!|(,<=\\.\\))", "|")) %>%
     mutate(content = str_replace(content, "^\\s*\\|+\\s*", "")) %>% 
     mutate(content = str_replace(content, "(?<=\\.\\.)1", "|")) %>% 
     mutate(content = str_replace_all(content, "(\\.{2,})\\s*([A-Za-z0-9])", "\\1|\\2")) %>%
@@ -30,7 +30,7 @@ split_and_process_ocr_text_copie <- function(text) {
                }
              }) %>% 
 #end of add
-    mutate(contentss = str_replace_all(contents, "\\|\\s*\\|", "|")) %>% 
+    mutate(contentss = str_replace_all(contents, "\\|\\s*\\|*", "|")) %>% 
     mutate(arg = str_split(contentss, "(?<!\\d)\\.+(?!\\d)")) %>% 
     mutate(arg = as.character(arg)) %>% 
     mutate(arg = str_replace_all(arg, "\", \"", "")) %>%
