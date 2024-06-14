@@ -53,5 +53,5 @@ The project is done 100% on Rstudio with a dedicated Rproject.
 - **image_processing_function_odd.R**
 - **split_and_process_ocr_text.R**
 
+<img src="./v2 1.svg">
 
-![map of the R work](v2.png)
