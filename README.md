@@ -1,6 +1,3 @@
 # ocr
 OCR work on french archive
-
-![eheh](v2.excalidraw.png)
-
-![eheh](v2.png)
+![map of the R work](v2.png)
