@@ -1,5 +1,5 @@
 
-# cut pges in 2 to have even and odd
+# cut pages in 2 to have even and odd
 
 file_list <- list.files("data/raw", pattern = "\\.tiff$", full.names = TRUE)
 tiff_list <- lapply(file_list, image_read)
@@ -870,5 +870,19 @@ str_replace_all(str, "\\t", "")
 
 
 str_replace_all(str, "\\.{2,}\\)", "|")
+
+str <- c("Bert....................| Houille..............| 1,337 62.125 361|")
+str_split(str, "(?<!\\d)\\.+(?!\\d)")
+
+
+
+str_detect(ds_text[[col]], "\\b\\w{13,}\\b")
+
+
+
+
+
+
+
 
 
