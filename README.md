@@ -2,8 +2,8 @@
 
 
 ## Disclaimer
-
-This project is a personal endeavor and is provided as-is, without any warranty or guarantee of functionality, accuracy, or reliability. Althouth the project is made to be replicable, the R codes are specific to the pdf of the archives. It is intended for educational and inspirational purposes only.
+>[!IMPORTANT]
+>This project is a personal endeavor and is provided as-is, without any warranty or guarantee of functionality, accuracy, or reliability. Althouth the project is made to be replicable, the R codes are specific to the pdf of the archives. It is intended for educational and inspirational purposes only.
 
 
 ## Description
