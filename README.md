@@ -55,3 +55,6 @@ The project is done 100% on Rstudio with a dedicated Rproject.
 
 <img src="./v2 1.svg">
 
+aa
+
+![map of R work](v2_1.png)
