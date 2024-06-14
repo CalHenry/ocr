@@ -47,5 +47,11 @@ The project is done 100% on Rstudio with a dedicated Rproject.
 - **processing_and_ocr.R** first script: import data, uses image processing function and uses OCR.
 - **post_ocr.R** second script: process the returned text of the OCR, do a lot a data manipulation with stringr and export the dataset as an excel file.
 
+3 custom functions are used to keep the scripts nice and clean. They regroup sequences of actions made to their input.
+
+- **image_processing_function_even.R** 
+- **image_processing_function_odd.R**
+- **split_and_process_ocr_text.R**
+
 
 ![map of the R work](v2.png)
