@@ -22,9 +22,7 @@ This work is done in 4 steps :
 
 ## Installation
 
-I advice to clone this repo to you local folder.
-
-However, I recommend to keep the folder structure like so:
+If you don't clone this repo, I strongly recommend to keep the folder structure for the code to run smoothly:
 
 ```
 ├── data
@@ -47,11 +45,11 @@ The project is done 100% on Rstudio with a dedicated Rproject.
 - **processing_and_ocr.R** first script: import data, uses image processing function and uses OCR.
 - **post_ocr.R** second script: process the returned text of the OCR, do a lot a data manipulation with stringr and export the dataset as an excel file.
 
-3 custom functions are used to keep the scripts nice and clean. They regroup sequences of actions made to their input.
+3 custom functions are used to keep the scripts nice and clean. They group sequences of actions made to their input.
 
 - **image_processing_function_even.R** 
 - **image_processing_function_odd.R**
 - **split_and_process_ocr_text.R**
 
-<img src="./v2 1.svg">
+<img src="./map_of_the_work.svg">
 
