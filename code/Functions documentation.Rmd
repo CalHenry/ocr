@@ -10,7 +10,7 @@ output:
 
 # image_processing_function_even.R
 
-```{r, eval=FALSE, highlight=TRUE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, highlight=TRUE, paged.print=FALSE}
 process_image_even <- function(image) {
   info <- image_info(image)
   
