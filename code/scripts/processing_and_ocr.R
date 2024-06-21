@@ -56,7 +56,7 @@ even_pages_list <- lapply(tiff_list, function(image) {
 })
 
 
-## list fo odd pages ----
+## list of odd pages ----
 odd_pages_list <- lapply(tiff_list, function(image) {
   info <- image_info(image)
   im_c <- image %>%
@@ -68,7 +68,7 @@ odd_pages_list <- lapply(tiff_list, function(image) {
   return(im_c)
 })
 
-gc()
+gc() #free memory
 
 # Image processing --------------------------------------------------------
 
